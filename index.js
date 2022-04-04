@@ -9,9 +9,9 @@ const c$ = (0, rxjs_1.merge)(a$, b$).pipe((0, rxjs_1.map)((x) => {
         return (x += x);
     return x * 10;
 }));
-c$.subscribe((x) => console.log(x));
+// c$.subscribe((x) => console.log(x));
 // 2.
-const test = (0, rxjs_1.interval)(1000).pipe((0, rxjs_1.filter)((x) => x % 2 === 0));
+const test = (0, rxjs_1.interval)(1000).pipe((0, rxjs_1.filter)((x) => x % 2 === 0), (0, rxjs_1.map)((x) => x * 2));
 test.subscribe((x) => console.log(x));
 const users = [
     {
@@ -26,13 +26,7 @@ const users = [
     },
 ];
 function getUsers() {
-    const obs$ = (0, rxjs_1.of)(users).pipe((0, rxjs_1.delay)(5000));
-    obs$.subscribe(() => {
-        for (const user of users) {
-            if (user.age > 18)
-                return `${user.firstName} ${user.lastName}, ${user.age} years old`;
-        }
-    });
-    return obs$;
+    return (0, rxjs_1.of)(users).pipe((0, rxjs_1.delay)(5000));
 }
-getUsers();
+getUsers().pipe((0, rxjs_1.map)((users) => users.filter((user) => user.age > 17)), (0, rxjs_1.map)((users) => users.map((user) => `${user.firstName} ${user.lastName} is ${user.age} years old`)));
+// .subscribe(console.log);

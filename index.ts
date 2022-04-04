@@ -13,7 +13,10 @@ const c$ = merge(a$, b$).pipe(
 c$.subscribe((x) => console.log(x));
 
 // 2.
-const test = interval(1000).pipe(filter((x: number) => x % 2 === 0));
+const test = interval(1000).pipe(
+    filter((x: number) => x % 2 === 0),
+    map((x: number) => x * 2)
+);
 test.subscribe((x) => console.log(x));
 
 // 3.
@@ -37,15 +40,16 @@ const users: User[] = [
 ];
 
 function getUsers(): Observable<User[]> {
-    const obs$ = of(users).pipe(delay(5000));
-
-    obs$.subscribe(() => {
-        for (const user of users) {
-            if (user.age > 18)
-                return `${user.firstName} ${user.lastName}, ${user.age} years old`;
-        }
-    });
-
-    return obs$;
+    return of(users).pipe(delay(5000));
 }
-getUsers();
+getUsers()
+    .pipe(
+        map((users: User[]) => users.filter((user) => user.age > 17)),
+        map((users: User[]) =>
+            users.map(
+                (user) =>
+                    `${user.firstName} ${user.lastName} is ${user.age} years old`
+            )
+        )
+    )
+    .subscribe(console.log);
